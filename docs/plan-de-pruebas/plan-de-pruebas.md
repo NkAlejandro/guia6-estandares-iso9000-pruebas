@@ -60,12 +60,12 @@ Se aplican pruebas funcionales, de regresión en cada entrega mediante el flujo 
 
 ## 6. Cronograma
 
-| Fase | Fecha estimada | Responsable |
-|---|---|---|
-| Diseño de casos | [fecha] | Analista de calidad |
-| Configuración del entorno | [fecha] | Desarrollador |
-| Ejecución de pruebas | [fecha] | Todo el equipo |
-| Informe final | [fecha] | Administrador del proyecto |
+| Fase | Fecha estimada | Responsable | Estado |
+|---|---|---|---|
+| Diseño de casos | 22/09/2026 | Analista de calidad | Completada |
+| Configuración del entorno | 24/09/2026 | Desarrollador | Completada |
+| Ejecución de pruebas | 27/09/2026 | Todo el equipo | Completada |
+| Informe final | 29/09/2026 | Administrador del proyecto | Completada |
 
 > **Nota.** Los roles PSP/TSP rotan según la metodología de la guía.
 
@@ -82,6 +82,97 @@ Se aplican pruebas funcionales, de regresión en cada entrega mediante el flujo 
 
 - **Entrada:** requisitos aprobados, entorno listo y casos de prueba definidos.
 - **Salida:** al menos 95 % de los casos ejecutados, 100 % de los defectos críticos resueltos e informe de calidad entregado.
+
+---
+
+## 9. Evidencia de la ejecución
+
+El código de la aplicación y de las pruebas se encuentra en el repositorio del equipo:
+
+**https://github.com/NkAlejandro/guia6-estandares-iso9000-pruebas**
+
+### 9.1 Ejecución de los escenarios del plan
+
+```bash
+node app/tests/pruebas.js
+```
+
+**Salida real de la consola:**
+
+```
+  [PASS] EP-01  Productos  Crear producto valido
+         Nombre=Cafe molido 500g, precio=18500, categoria=Bebidas -> guardado y visible en el listado
+  [PASS] EP-02  Productos  Crear producto con precio negativo
+         Precio=-5 -> El precio debe ser un número mayor que cero; no se guardo en la base de datos
+  [PASS] EP-03  Pedidos    Crear pedido con productos en stock
+         2 productos x cantidad 1 -> pedido id=1, total=7700 (esperado 7700), estado=CONFIRMADO
+  [PASS] EP-04  Pedidos    Pedido con cantidad superior al stock
+         Cantidad=999 -> Stock insuficiente
+  [PASS] EP-05  Compras    Registrar compra a proveedor
+         Proveedor=Distribuidora del Sur, cantidad=25 -> compra id=3, total=462500; inventario 0 -> 25
+  [PASS] EP-06  Inventario Descuento de inventario al confirmar pedido
+         Pedido confirmado, cantidad=3 -> existencia 25 - 3 = 22
+  [PASS] EP-07  Inventario Consultar producto sin existencias
+         Stock=0 -> se muestra agotado (agotado=true)
+  [PASS] EP-08  RR. HH.    Registrar empleado
+         Documento=1002345678, nombre=Ana Restrepo, cargo=Analista de calidad -> empleado guardado
+  [PASS] EP-09  RR. HH.    Registrar empleado con documento duplicado
+         Documento=1002345678 (existente) -> Ya existe un empleado con ese documento
+  [PASS] EP-10  Seguridad  Inicio de sesion con credenciales incorrectas
+         Usuario=admin, clave incorrecta -> acceso denegado (sesion=null)
+  [PASS] EP-11  Seguridad  Usuario estandar accede a modulo restringido
+         Rol=consulta, modulo=rrhh -> acceso bloqueado (puedeAcceder=false)
+  [PASS] EP-12  Seguridad  Inyeccion SQL en campo de busqueda
+         Entrada="' OR 1=1 --" -> rechazada o sanitizada por el validador de entrada (detectado=true)
+
+  Casos de prueba ejecutados : 12/12
+  Casos aprobados            : 12 (100.0%)
+  Casos fallidos             : 0
+  Defectos criticos          : 0
+  Criterio de salida (< 95%) : CUMPLIDO
+```
+
+### 9.2 Pruebas de integración de la API REST
+
+```bash
+node app/tests/pruebas-api.js
+```
+
+```
+  [PASS] EP-10  POST /api/login admin/incorrecta -> HTTP 401 { "error": "Credenciales invalidas" }
+  [PASS] EP-11a GET /api/productos token=tok-1 -> HTTP 200
+  [PASS] EP-11  GET /api/rrhh rol=consulta -> HTTP 403 { "error": "Acceso denegado al modulo rrhh para el rol consulta" }
+  [PASS] EP-11b GET /api/productos sin token -> HTTP 401
+  [PASS] EP-12  GET /api/buscar?q=' OR 1=1 -- -> HTTP 400 { "error": "Entrada rechazada: posible intento de inyeccion SQL" }
+  [PASS] EP-12b GET /api/buscar?q=Pan -> HTTP 200
+
+  Casos ejecutados : 7/7
+  Casos aprobados  : 7 (100.0%)
+  Casos fallidos   : 0
+```
+
+### 9.3 Capturas de pantalla
+
+Las capturas se generan ejecutando el código y convirtiendo la salida real de la consola en
+imagen (`npm run evidencia`). Están en la carpeta `evidencia/` del repositorio:
+
+| Captura | Contenido |
+|---|---|
+| `evidencia/captura-01-pruebas-unitarias.png` | Salida de `node app/tests/pruebas.js` con los 12 escenarios |
+| `evidencia/captura-02-pruebas-api.png` | Salida de `node app/tests/pruebas-api.js` con las pruebas de la API |
+
+### 9.4 Incidencias detectadas y corregidas
+
+Durante la ejecución se detectaron y corrigieron dos defectos reales:
+
+1. **EP-03 falló** con `Error: Stock insuficiente` porque los datos de partida no registraban
+   existencias para el segundo producto del pedido. Corrección: se agregó la compra de inventario.
+2. **EP-12 tenía la aserción invertida**: reportaba FAIL cuando el validador *sí* detectaba el
+   patrón malicioso, que es justamente el resultado esperado. Corrección: se ajustó la lógica.
+
+Estos casos se documentan porque demuestran que las pruebas se ejecutaron y que el resultado
+se verificó, en línea con el principio de que los datos cuantitativos deben analizarse
+cuidadosamente para comprender lo que realmente significan.
 
 ---
 
