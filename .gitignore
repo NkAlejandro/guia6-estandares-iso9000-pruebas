@@ -1,0 +1,29 @@
+# Dependencias y artefactos de build
+bin/
+obj/
+[Bb]uild/
+*.user
+node_modules/
+vendor/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Bases de datos y secretos
+*.mdb
+*.sqlite
+.env
+.env.local
+*.key
+*.pem
+
+# Office / temporales
+~$*.docx
+~$*.xlsx
+*.tmp
+*.log
