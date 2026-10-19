@@ -1,0 +1,85 @@
+﻿==============================================================================
+PLAN DE PRUEBAS - APLICACION WEB CON BASE DE DATOS
+Guia 6 - Estandares de Calidad ISO 9000 y Pruebas de Software
+UMB | Ingenieria de Software | 2026
+==============================================================================
+
+------------------------------------------------------------------------------
+M├ôDULO PRODUCTOS
+------------------------------------------------------------------------------
+  [PASS] EP-01  Productos  Crear producto valido
+         Nombre=Cafe molido 500g, precio=18500, categoria=Bebidas -> guardado y visible en el listado
+  [PASS] EP-02  Productos  Crear producto con precio negativo
+         Precio=-5 -> El precio debe ser un n├║mero mayor que cero; no se guardo en la base de datos
+
+------------------------------------------------------------------------------
+M├ôDULO PEDIDOS
+------------------------------------------------------------------------------
+  [PASS] EP-03  Pedidos    Crear pedido con productos en stock
+         2 productos x cantidad 1 -> pedido id=1, total=7700 (esperado 7700), estado=CONFIRMADO
+  [PASS] EP-04  Pedidos    Pedido con cantidad superior al stock
+         Cantidad=999 -> Stock insuficiente
+
+------------------------------------------------------------------------------
+M├ôDULO COMPRAS
+------------------------------------------------------------------------------
+  [PASS] EP-05  Compras    Registrar compra a proveedor
+         Proveedor=Distribuidora del Sur, cantidad=25 -> compra id=3, total=462500; inventario 0 -> 25
+
+------------------------------------------------------------------------------
+M├ôDULO INVENTARIO
+------------------------------------------------------------------------------
+  [PASS] EP-06  Inventario Descuento de inventario al confirmar pedido
+         Pedido confirmado, cantidad=3 -> existencia 25 - 3 = 22
+  [PASS] EP-07  Inventario Consultar producto sin existencias
+         Stock=0 -> se muestra agotado (agotado=true)
+
+------------------------------------------------------------------------------
+M├ôDULO RECURSOS HUMANOS
+------------------------------------------------------------------------------
+  [PASS] EP-08  RR. HH.    Registrar empleado
+         Documento=1002345678, nombre=Ana Restrepo, cargo=Analista de calidad -> empleado guardado
+  [PASS] EP-09  RR. HH.    Registrar empleado con documento duplicado
+         Documento=1002345678 (existente) -> Ya existe un empleado con ese documento
+
+------------------------------------------------------------------------------
+M├ôDULO SEGURIDAD
+------------------------------------------------------------------------------
+  [PASS] EP-10  Seguridad  Inicio de sesion con credenciales incorrectas
+         Usuario=admin, clave incorrecta -> acceso denegado (sesion=null)
+  [PASS] EP-11  Seguridad  Usuario estandar accede a modulo restringido
+         Rol=consulta, modulo=rrhh -> acceso bloqueado (puedeAcceder=false)
+  [PASS] EP-12  Seguridad  Inyeccion SQL en campo de busqueda
+         Entrada="' OR 1=1 --" -> rechazada o sanitizada por el validador de entrada (detectado=true)
+
+------------------------------------------------------------------------------
+CALIDAD DE DATOS (ISO/IEC 25012 y 25024)
+------------------------------------------------------------------------------
+  Registros de productos: 4
+  Registros completos   : 4
+  Completitud           : 100%
+  Duplicados detectados : 0
+
+==============================================================================
+RESUMEN DE LA EJECUCION
+==============================================================================
+  OK   EP-01  Crear producto valido
+  OK   EP-02  Crear producto con precio negativo
+  OK   EP-03  Crear pedido con productos en stock
+  OK   EP-04  Pedido con cantidad superior al stock
+  OK   EP-05  Registrar compra a proveedor
+  OK   EP-06  Descuento de inventario al confirmar pedido
+  OK   EP-07  Consultar producto sin existencias
+  OK   EP-08  Registrar empleado
+  OK   EP-09  Registrar empleado con documento duplicado
+  OK   EP-10  Inicio de sesion con credenciales incorrectas
+  OK   EP-11  Usuario estandar accede a modulo restringido
+  OK   EP-12  Inyeccion SQL en campo de busqueda
+
+  Casos de prueba ejecutados : 12/12
+  Casos aprobados            : 12 (100.0%)
+  Casos fallidos             : 0
+  Defectos criticos          : 0
+  Criterio de salida (< 95%) : CUMPLIDO
+==============================================================================
+

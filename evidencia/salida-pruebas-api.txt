@@ -1,0 +1,54 @@
+﻿==============================================================================
+PRUEBAS DE INTEGRACION - API REST
+Guia 6 - Estandares de Calidad ISO 9000 y Pruebas de Software
+==============================================================================
+
+  Servidor escuchando en 127.0.0.1:59515
+
+------------------------------------------------------------------------------
+AUTENTICACION
+------------------------------------------------------------------------------
+  [PASS] EP-10a Login con credenciales validas (admin)
+         POST /api/login admin/admin123 -> HTTP 200, rol=administrador, token=tok-1
+  [PASS] EP-10 Inicio de sesion con credenciales incorrectas
+         POST /api/login admin/incorrecta -> HTTP 401 { "error": "Credenciales invalidas" }
+
+------------------------------------------------------------------------------
+CONTROL DE ACCESO POR ROLES
+------------------------------------------------------------------------------
+  [PASS] EP-11a Administrador accede a modulo permitido
+         GET /api/productos token=tok-1 -> HTTP 200
+  [PASS] EP-11 Usuario estandar accede a modulo restringido
+         GET /api/rrhh rol=consulta -> HTTP 403 { "error": "Acceso denegado al modulo rrhh para el rol consulta" }
+  [PASS] EP-11b Acceso sin token valido
+         GET /api/productos sin token -> HTTP 401
+
+------------------------------------------------------------------------------
+INYECCION SQL
+------------------------------------------------------------------------------
+  [PASS] EP-12 Inyeccion SQL en campo de busqueda
+         GET /api/buscar?q=' OR 1=1 -- -> HTTP 400 { "error": "Entrada rechazada: posible intento de inyeccion SQL" }
+  [PASS] EP-12b Consulta legitima sigue funcionando
+         GET /api/buscar?q=Pan -> HTTP 200 { "resultados": [] }
+
+------------------------------------------------------------------------------
+CALIDAD DE DATOS (ISO/IEC 25012 / 25024)
+------------------------------------------------------------------------------
+  { "completitud": { "totalRegistros": 0, "registrosCompletos": 0, "completitud": 100 }, "duplicados": [] }
+
+==============================================================================
+RESUMEN DE LA EJECUCION - API
+==============================================================================
+  OK    EP-10a  Login con credenciales validas (admin)
+  OK    EP-10  Inicio de sesion con credenciales incorrectas
+  OK    EP-11a  Administrador accede a modulo permitido
+  OK    EP-11  Usuario estandar accede a modulo restringido
+  OK    EP-11b  Acceso sin token valido
+  OK    EP-12  Inyeccion SQL en campo de busqueda
+  OK    EP-12b  Consulta legitima sigue funcionando
+
+  Casos ejecutados : 7/7
+  Casos aprobados  : 7 (100.0%)
+  Casos fallidos   : 0
+==============================================================================
+
