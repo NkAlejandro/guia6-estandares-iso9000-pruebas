@@ -1,0 +1,25 @@
+{
+  "name": "guia6-app-web-calidad",
+  "version": "1.0.0",
+  "description": "Aplicacion web con base de datos (productos, pedidos, compras, inventario, RR.HH.) para la Guia 6 - Estandares de Calidad ISO 9000 y Pruebas de Software",
+  "private": true,
+  "main": "app/src/server.js",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node app/src/server.js",
+    "test": "node app/tests/pruebas.js",
+    "test:api": "node app/tests/pruebas-api.js",
+    "evidencia": "powershell.exe -ExecutionPolicy Bypass -File scripts/generar-capturas.ps1"
+  },
+  "keywords": [
+    "iso-9000",
+    "iso-iec-25000",
+    "square",
+    "pruebas-de-software",
+    "calidad"
+  ],
+  "author": "UMB Ingenieria de Software 2026",
+  "license": "UNLICENSED"
+}
