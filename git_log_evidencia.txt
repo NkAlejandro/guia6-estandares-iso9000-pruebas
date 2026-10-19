@@ -1,0 +1,10 @@
+﻿* 6fba8d5 docs(referencias): bibliografia consolidada en formato APA 7
+* 06bd3b1 docs(trabajo-autonomo): consulta ISO/IEC 25000:2014 en ingles + video explicativo
+* 21881e3 test: plan de pruebas del proyecto de semestre (alcance, escenarios, criterios)
+* a915a9d docs(sesion-4): tipos de pruebas de software y mapa conceptual de la sesion 4
+* ec9728b docs(sesion-2): ventajas y desventajas de ISO 9000, 9001, 9002, 9003 y 9004
+* 8327615 docs(sesion-1): objeto, campo de accion y estructura de la familia ISO 9000
+* e5018eb docs(iso25000): informe de aplicacion de ISO/IEC 25010, 25012, 25020, 25021, 25022, 25023 y 25024
+* fc14e90 docs(iso25000): marco conceptual y mapa conceptual de la familia SQuaRE
+* 40ed332 docs(readme): README del proyecto, roles PSP/TSP e indice de documentacion
+* a7791f3 chore: estructura inicial del repositorio + .gitignore
