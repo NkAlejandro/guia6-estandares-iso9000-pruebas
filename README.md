@@ -25,19 +25,118 @@
 GUIA06_ESTANDARES_GITHUB/
 ├── README.md
 ├── .gitignore
-└── docs/
-    ├── marco-conceptual-iso25000.md
-    ├── normas-aplicadas-25010-25024.md
-    ├── trabajo-autonomo-ingles.md
-    ├── plan-de-pruebas/
-    │   └── plan-de-pruebas.md
-    ├── sesiones/
-    │   ├── sesion-1-iso9000.md
-    │   ├── sesion-2-ventajas-desventajas.md
-    │   └── sesion-4-pruebas.md
-    └── referencias/
-        └── referencias-apa7.md
+├── app/
+│   ├── package.json
+│   ├── src/
+│   │   ├── database.js      # Esquema SQLite y lógica de los 6 módulos
+│   │   └── server.js        # API REST con control de acceso por roles
+│   └── tests/
+│       ├── pruebas.js       # Escenarios EP-01 a EP-12
+│       └── pruebas-api.js   # Pruebas de integración sobre HTTP
+├── docs/
+│   ├── marco-conceptual-iso25000.md
+│   ├── normas-aplicadas-25010-25024.md
+│   ├── trabajo-autonomo-ingles.md
+│   ├── plan-de-pruebas/
+│   │   └── plan-de-pruebas.md
+│   ├── sesiones/
+│   │   ├── sesion-1-iso9000.md
+│   │   ├── sesion-2-ventajas-desventajas.md
+│   │   └── sesion-4-pruebas.md
+│   └── referencias/
+│       └── referencias-apa7.md
+├── evidencia/
+│   ├── captura-01-pruebas-unitarias.png
+│   ├── captura-02-pruebas-api.png
+│   ├── salida-pruebas.txt
+│   ├── salida-pruebas-api.txt
+│   └── README.md
+└── scripts/
+    └── generar-capturas.ps1
 ```
+
+---
+
+## Aplicación web del proyecto
+
+Aplicación REST con base de datos relacional que respalda los escenarios del plan de pruebas.
+Módulos: **productos, pedidos, compras, inventario, recursos humanos** y control de acceso por
+**roles** (administrador, operador, consulta).
+
+**Tecnología:** Node.js 22.5+ con `node:sqlite` integrado. **Sin dependencias externas**, por lo
+que `npm install` no es necesario.
+
+### Cómo ejecutar
+
+```bash
+# Pruebas de los 12 escenarios del plan
+node app/tests/pruebas.js
+
+# Pruebas de integración de la API REST
+node app/tests/pruebas-api.js
+
+# Levantar la API
+node app/src/server.js
+
+# Regenerar las capturas de evidencia
+npm run evidencia
+```
+
+### Endpoints principales
+
+| Método | Ruta | Rol mínimo | Descripción |
+|---|---|---|---|
+| POST | `/api/login` | público | Autenticación, devuelve token y rol |
+| GET | `/api/productos` | consulta | Listar productos con existencia |
+| GET | `/api/inventario` | consulta | Consultar inventario completo |
+| GET | `/api/rrhh` | administrador | Listar empleados |
+| GET | `/api/buscar?q=` | consulta | Búsqueda con sanitización anti-inyección |
+| GET | `/api/calidad/datos` | administrador | Completitud y duplicados (ISO/IEC 25012, 25024) |
+
+Usuarios de prueba: `admin/admin123`, `operador/oper123`, `consulta/consulta123`.
+
+---
+
+## Resultados de las pruebas
+
+```
+Pruebas de los escenarios del plan (EP-01 a EP-12)
+  Casos de prueba ejecutados : 12/12
+  Casos aprobados            : 12 (100.0%)
+  Casos fallidos             : 0
+  Defectos críticos          : 0
+  Criterio de salida (< 95%) : CUMPLIDO
+
+Pruebas de integración de la API
+  Casos ejecutados : 7/7
+  Casos aprobados  : 7 (100.0%)
+  Casos fallidos   : 0
+```
+
+Las capturas en `evidencia/` se generan ejecutando el código y convirtiendo la salida real de la
+consola en imagen. Para reproducirlas: `npm run evidencia`.
+
+Detalle completo en [`docs/plan-de-pruebas/plan-de-pruebas.md`](docs/plan-de-pruebas/plan-de-pruebas.md)
+y [`evidencia/README.md`](evidencia/README.md).
+
+---
+
+## Declaración de uso de inteligencia artificial
+
+Durante la elaboración de este repositorio se utilizó un asistente de IA generativa como
+apoyo. Su uso se declara de forma explícita conforme a los criterios de ética académica:
+
+- **Qué aportó:** generación del esquema de la base de datos, de los módulos de negocio, de la
+  API REST y de los guiones de las 12 pruebas; redacción de los mapas conceptuales en texto y
+  de la estructura del repositorio.
+- **Qué verificó el equipo:** la ejecución real de todo el código (los resultados publicados
+  provienen de ejecutar `node app/tests/pruebas.js` y `node app/tests/pruebas-api.js`), la
+  corrección de dos defectos detectados durante las pruebas —EP-03 por falta de existencias en
+  los datos de partida y EP-12 con la aserción invertida— y la validación de los contenidos
+  normativos contra las fuentes citadas en APA 7.
+
+Las capturas de pantalla corresponden a ejecuciones reales del código que se encuentra en este
+repositorio y pueden ser reproducidas por cualquier persona con Node.js instalado.
 
 ---
 
@@ -98,7 +197,7 @@ Se elaboró un informe sobre la aplicación de las normas **ISO/IEC 25010, 25012
 
 ## Plan de pruebas
 
-El plan completo está en [`docs/plan-de-pruebas/plan-de-pruebas.md`](docs/plan-de-pruebas/plan-de-pruebas.md). Cubre la aplicación web con base de datos del semestre, con módulos de productos, pedidos, compras, inventario y recursos humanos.
+El plan completo está en [`docs/plan-de-pruebas/plan-de-pruebas.md`](docs/plan-de-pruebas/plan-de-pruebas.md). Cubre la aplicación web con base de datos del semestre, con módulos de productos, pedidos, compras, inventario y recursos humanos, e incluye los 12 escenarios de prueba, la evidencia de ejecución y las incidencias detectadas.
 
 ---
 
@@ -118,7 +217,7 @@ git log --oneline --graph --all
 
 ## Palabras clave
 
-`ISO 9000` · `ISO/IEC 25000 (SQuaRE)` · `Pruebas de software` · `ISO/IEC 29119` · `Calidad del producto`
+`ISO 9000` · `ISO/IEC 25000 (SQuaRE)` · `ISO/IEC 25010` · `Pruebas de software` · `ISO/IEC 29119` · `Calidad del producto`
 
 ---
 
